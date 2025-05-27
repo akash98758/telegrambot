@@ -17,19 +17,29 @@ from rss_sourcing import get_jobs_from_all_feeds
 from gemini_processor import configure_gemini, process_job_with_gemini
 from database import initialize_db, add_job_posted, is_job_posted
 
+# Load environment variables from .env file
+from dotenv import load_dotenv
+load_dotenv()
+
 # --- Configuration ---
 # Load from environment variables
 BOT_TOKEN = os.getenv("TELEGRAM_BOT_TOKEN")
 CHANNEL_ID = os.getenv("TELEGRAM_CHANNEL_ID") # e.g., "@yourchannelname" or "-1001234567890"
 GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
 
-# RSS Feed URLs - replace with your actual URLs or load from a config file/env
-RSS_FEED_URLS = [
-    # "https://example.com/feed1.xml",
-    # "https://jobs.another-site.com/rss",
-    "URL_1_PLACEHOLDER", # Keep as placeholder if no actual URLs yet
-    "URL_2_PLACEHOLDER"
-]
+# RSS Feed URLs - Loaded from environment variable, with a fallback to a hardcoded list.
+# The environment variable should be a comma-separated string of URLs.
+RSS_FEED_URLS_ENV = os.getenv("RSS_FEED_URLS")
+if RSS_FEED_URLS_ENV:
+    RSS_FEED_URLS = [url.strip() for url in RSS_FEED_URLS_ENV.split(',') if url.strip()]
+else:
+    # Fallback to hardcoded list if the environment variable is not set or is empty
+    RSS_FEED_URLS = [
+        # "https://example.com/feed1.xml", # Example
+        # "https://jobs.another-site.com/rss", # Example
+        "URL_1_PLACEHOLDER", # Default placeholder
+        "URL_2_PLACEHOLDER"  # Default placeholder
+    ]
 
 # Job posting interval (in hours)
 JOB_POSTING_INTERVAL_HOURS = int(os.getenv("JOB_POSTING_INTERVAL_HOURS", 1))

@@ -40,35 +40,39 @@ This project is an AI-powered Telegram bot that automatically sources job postin
     pip install -r requirements.txt
     ```
 
-4.  **Set Environment Variables:**
-    The bot requires the following environment variables to be set. You can set these in your operating system or by creating a `.env` file and using a library like `python-dotenv` (though `python-dotenv` is not explicitly included in `requirements.txt` for this project, you can add it if you prefer this method).
+### Environment Variables
 
-    *   `TELEGRAM_BOT_TOKEN`: Your Telegram Bot Token obtained from BotFather.
-    *   `TELEGRAM_CHANNEL_ID`: The ID of your Telegram channel (e.g., `@yourchannelname` or a numerical ID like `-1001234567890`).
-    *   `GEMINI_API_KEY`: Your API key for the Google Gemini AI.
-    *   `JOB_POSTING_INTERVAL_HOURS` (Optional): The interval in hours for fetching and posting jobs. Defaults to `1` if not set.
+This project uses a `.env` file to manage environment variables for configuration.
 
-    Example:
+1.  **Create your `.env` file:**
+    Make a copy of the example file `.env.example` and name it `.env`:
     ```bash
-    export TELEGRAM_BOT_TOKEN="your_bot_token_here"
-    export TELEGRAM_CHANNEL_ID="@your_channel_username"
-    export GEMINI_API_KEY="your_gemini_api_key_here"
-    # export JOB_POSTING_INTERVAL_HOURS="2" # Optional
+    cp .env.example .env
     ```
 
-5.  **Configure RSS Feed URLs:**
-    The list of RSS feed URLs is currently managed in the `telegram_bot_framework.py` script, within the `RSS_FEED_URLS` list.
-    ```python
-    # In telegram_bot_framework.py
-    RSS_FEED_URLS = [
-        "URL_1_PLACEHOLDER",
-        "URL_2_PLACEHOLDER"
-        # Replace these placeholders with actual RSS feed URLs.
-        # e.g., "https://feeds.yourjobsite.com/jobs"
-    ]
-    ```
-    You **must** replace the placeholder URLs with actual, valid RSS feed URLs for the bot to fetch jobs.
-    For more flexible configuration, consider moving `RSS_FEED_URLS` to an environment variable (e.g., a comma-separated string) or a dedicated configuration file.
+2.  **Edit your `.env` file:**
+    Open the `.env` file with a text editor and fill in your actual credentials and configuration values:
+    *   `BOT_TOKEN`: Your Telegram Bot Token obtained from BotFather.
+    *   `CHANNEL_ID`: The ID of your Telegram channel (e.g., `-1001234567890` for private channels/supergroups, or `@yourchannelusername` for public channels).
+    *   `GEMINI_API_KEY`: Your API key for the Gemini AI.
+    *   `RSS_FEED_URLS`: A comma-separated list of RSS feed URLs you want to source jobs from (e.g., `https://example.com/feed1.xml,https://another.example.com/feed2.xml`).
+    *   `JOB_POSTING_INTERVAL_HOURS`: The interval (in hours) at which the bot should check for and post new jobs (e.g., `1` for every hour).
+
+3.  **Important Security Note:**
+    The `.env` file contains sensitive credentials. **DO NOT commit it to version control (Git).** If you are using Git, make sure `.env` is listed in your `.gitignore` file. A general Python `.gitignore` template usually includes this. If not, add a line containing just `.env` to your `.gitignore`.
+
+### RSS Feed URL Configuration
+
+The primary way to configure the RSS feed URLs is through the `RSS_FEED_URLS` variable in your `.env` file. This should be a comma-separated list of valid RSS feed URLs.
+
+Example in `.env`:
+```
+RSS_FEED_URLS=https://example.com/feed1.xml,https://jobs.another-site.com/rss
+```
+
+If the `RSS_FEED_URLS` environment variable is not set or is empty, the bot will fall back to a hardcoded list in `telegram_bot_framework.py`. However, it is strongly recommended to use the `.env` file method.
+
+You **must** ensure that valid, non-placeholder URLs are provided either through the `.env` file or, as a last resort, by editing the fallback list in `telegram_bot_framework.py` for the bot to fetch jobs.
 
 ## Running the Bot
 
